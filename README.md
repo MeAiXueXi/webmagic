@@ -1,6 +1,6 @@
 # 四川政务网 事项抓取
 www.sczwfw.gov.cn
-
+其他地区也同理,代码你不一定能用,重要的是思路
 
 
 # 目录结构
@@ -52,10 +52,72 @@ TargetUrl和HelpUrl注解 [文档](http://webmagic.io/docs/zh/posts/ch5-annotati
 
 # 入参
 ModelPageProcessor : 注解网页对象  在网页抓取章节里详解介绍  
-PageProcessor: 普通网页对象  这个是给传统方式使用的,看 [这里](http://webmagic.io/docs/zh/posts/ch4-basic-page-processor/pageprocessor.html)
+PageProcessor: 普通网页对象  这个是给传统方式使用的,看 [这里](http://webmagic.io/docs/zh/posts/ch4-basic-page-processor/pageprocessor.html)  
 Site : http请求对象 , http嘛肯定是配置cookies、header、超时时间、重试次数等等...乱七八糟参数的地方  
 PageModelPipeline : 看 [文档](http://webmagic.io/docs/zh/posts/ch6-custom-componenet/pipeline.html) 
 
+# 网页抓取
+下面我分成两个部分讲述  
+1. 创建OOSpider时 发生了什么  
+2.如何设计映射关系(实体类)  
+
+先看一段代码:  
+public class GithubRepo {  
+    @ExtractBy("//div[@id='readme']/tidyText()")  
+    private String readme;  
+   
+    public static void main(String[] args) {  
+        OOSpider.create(Site.me().setSleepTime(1000)  
+                , GithubRepo.class)  
+                .addUrl("https://github.com/code4craft").thread(5).run();  
+    }  
+}  
+这段代码描述了：
+
+1 . GithubRepo 拥有的字段readme 被@ExtractBy 注释,它的抽取规则为//div[@id='readme']/tidyText()
+
+2.创建一个爬虫  OOSpider.create()
+
+3. 爬虫传入了两个类 : Site类 和 拥有抽取规则的类
+
+4.使用addUrl()，规定了抓取的页面
+
+5.创建线程并运行
+
+ 
+
+代码内部过程:
+
+1.将Url pull 到 Scheduler 接口
+
+2.初始化组件：
+
+创建HttpClient、创建线程池、通过Scheduler获取Request集合
+
+3.请求页面
+
+4.抽取数据 ，被@ExtractBy注释的字段都会被PageModelExtractor类，注入对应数据
+
+5.存放数据
+
+存放的数据有二种方式获取
+
+一。Pipeline 接口   可在线程运行和结束时可获取数据
+
+二。AfterExtractor接口    单个线程结束时 可获取数据，我使用这种方式保存数据
+
+ 
+
+回到我们代码本身,肯定不能将需要抓取的字段和接口实现放置到一起,但是数据要统一管理
+
+Admin类正是为此而设计  
+![](https://img-blog.csdnimg.cn/20200108165712745.png)  
+它继承了拥有@ExtractBy注解的实体类,同时要求实现类需要实现AfterExtractor类的方法
+
+Laws类图：  
+![](https://img-blog.csdnimg.cn/20200108170150195.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9saXhkb25nLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70)  
+在程序入口，需要继承Admin类，实现afterProcess方法  
+![](https://img-blog.csdnimg.cn/2020010817044661.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9saXhkb25nLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70)  
 
 
 
