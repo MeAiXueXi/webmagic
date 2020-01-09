@@ -115,8 +115,7 @@ Admin类正是为此而设计
 ![](https://img-blog.csdnimg.cn/20200108165712745.png)  
 它继承了拥有@ExtractBy注解的实体类,同时要求实现类需要实现AfterExtractor类的方法
 
-Laws类图： 
-
+Laws类图：  
 ![](https://img-blog.csdnimg.cn/20200108170150195.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9saXhkb25nLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70)  
 在程序入口，需要继承Admin类，实现afterProcess方法  
 ![](https://img-blog.csdnimg.cn/2020010817044661.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9saXhkb25nLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70)  
