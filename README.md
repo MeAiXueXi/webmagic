@@ -22,8 +22,6 @@ UrlCache: 网页缓存的抽象
  
  
 在这一步,我们需要确认要抓取的网页是哪些,并观察网页是否有对外暴露的查询接口,经过调试,找到了这个接口:  
- 
-
 http://mss.sczwfw.gov.cn/app/powerDutyList/getThImplement  
 他支持的参数:  
 eventNam: 事项名称  
@@ -41,14 +39,22 @@ eventType ： 行政类型
 当数据准备就绪,需要使用OOSpider类进行网页数据抓取  
 OOSpider是注解式爬虫的入口，有这些方法  
 ![](https://img-blog.csdnimg.cn/20200108164220556.png)
+
 # 方法
-etCollectorPipeline() : 看了下源码，这个和AfterExtractor接口的功能一样,都是在运行时返回数据抽取结果。建议使用AfterExtractor接口,面向接口编程嘛  
+etCollectorPipeline():  
+看了下源码，这个和AfterExtractor接口的功能一样,都是在运行时返回数据抽取结果。建议使用AfterExtractor接口,面向接口编程嘛  
 两个create方法: 对构造方法的简单封装,因为构造方法是protected!  
-addPageModel(): 文档  
+addPageModel(): [文档](http://webmagic.io/docs/zh/posts/ch6-custom-componenet/pipeline.html)  
 setIsExtractLinks(): 是否提取网页链接
 这个需要搭配TargetUrl与HelpUrl注解使用,本质就是链接发现.我们已经发现过了，所以设置为false
 具体的你可以看ModelPageProcessor源码
-TargetUrl和HelpUrl注解文档
+TargetUrl和HelpUrl注解 [文档](http://webmagic.io/docs/zh/posts/ch5-annotation/targeturl.html)
+
+# 入参
+ModelPageProcessor : 注解网页对象  在网页抓取章节里详解介绍  
+PageProcessor: 普通网页对象  这个是给传统方式使用的,看 [这里](http://webmagic.io/docs/zh/posts/ch4-basic-page-processor/pageprocessor.html)
+Site : http请求对象 , http嘛肯定是配置cookies、header、超时时间、重试次数等等...乱七八糟参数的地方  
+PageModelPipeline : 看 [文档](http://webmagic.io/docs/zh/posts/ch6-custom-componenet/pipeline.html) 
 
 
 
