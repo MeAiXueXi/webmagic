@@ -4,7 +4,7 @@ webmagic 爬取www.sczwfw.gov.cn
 
 
 # 目录结构
-!(https://img-blog.csdnimg.cn/2020010816214447.png)
+![](https://img-blog.csdnimg.cn/2020010816214447.png)
 entity : 网页字段对应的实体类 
 main : 爬虫入口
 utils : 工具类 
